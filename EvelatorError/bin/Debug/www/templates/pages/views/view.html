@@ -1,0 +1,7 @@
+<h2>Toto je view.html</h2>
+      <ul>
+        <!-- toto se zobrazi, kdyz je pole prazdne -->
+        <li ng-if="!texts.length">No texts present.</li>
+        <!-- toto vypise vsechny prvky pole -->
+        <li ng-repeat="text in texts">{{text}}</li>
+      </ul>

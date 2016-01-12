@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- Zde uvedete vase pojmenovani aplikace, definovane v app.js -->
+<html ng-app="default">
+  <head>
+    <title>Evelator error pokus</title>
+    <meta charset ="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+    <!-- Vase skripty -->
+    <!-- hlavni skript aplikace -->
+    <script src="javascript/app.js"></script>
+    <!-- definice presmerovani -->
+    <!-- <script src="javascript/routes/routes.js"></script> -->
+    <!-- kontrolery -->
+    <script src="javascript/controllers/controllers.js"></script>
+
+  </head>
+  
+  <body>
+    <div ng-controller="IndexController">
+      <label>Name:</label>
+      <input type="text" ng-model="yourName" placeholder="Enter a name here">
+      <hr>
+      <h1>Hello MAAAN {{yourName}}!</h1>
+      <!-- schovat tlacitko, kdyz se generuje -->
+      <!-- stisknutim zavolat funkci generateText s priznakem zacni -->
+      <button ng-hide="generatingLocal" ng-click="generateText(true, true)">Generovat lokalni</button>
+      <!-- zobrazit tlacitko, kdyz se generuje -->
+      <!-- stisknutim zavolat funkci generateText s priznakem skonci -->
+      <button ng-show="generatingLocal" ng-click="generateText(false, true)">Zastavit lokalni</button>
+      <!-- schovat tlacitko, kdyz se generuje -->
+      <!-- stisknutim zavolat funkci generateText s priznakem zacni -->
+      <button ng-hide="generatingOnline" ng-click="generateText(true, false)">Generovat online</button>
+      <!-- zobrazit tlacitko, kdyz se generuje -->
+      <!-- stisknutim zavolat funkci generateText s priznakem skonci -->
+      <button ng-show="generatingOnline" ng-click="generateText(false, false)">Zastavit online</button>
+      <span>Pocet vygenerovanych zprav: {{messagesGenerated}}</span>
+      <hr>
+      <ul>
+        <!-- toto se zobrazi, kdyz je pole prazdne -->
+        <li ng-if="!texts.length">No texts present.</li>
+        <!-- toto vypise vsechny prvky pole -->        
+        <li ng-repeat="error in errors track by $index">{{error.userId + error.id}}</li>
+      </ul>
+    </div>
+  </body>
+</html>
