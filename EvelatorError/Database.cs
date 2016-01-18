@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
 
-sdadasdasdasadsasdasdasd asda sd as asd 
-    asdasd
 
 namespace EvelatorError
 {   /// <summary>
