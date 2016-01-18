@@ -28,7 +28,6 @@ namespace EvelatorError
             };
             ConnectString = csb.ConnectionString;
             Test();
-
         }
 
         /// <summary>
