@@ -6,13 +6,17 @@
     <meta charset ="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  
     <!-- Angular -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+    <script src="lib/angular.min.js"></script>
     <!-- Vase skripty -->
     <!-- hlavni skript aplikace -->
-    <script src="javascript/app.js"></script>
+    <script src="javascript/app.js?v=1.0.0"></script>
     <!-- definice presmerovani -->
     <!-- <script src="javascript/routes/routes.js"></script> -->
     <!-- kontrolery -->
@@ -21,31 +25,92 @@
   </head>
   
   <body>
+     
     <div ng-controller="IndexController">
-      <label>Name:</label>
-      <input type="text" ng-model="yourName" placeholder="Enter a name here">
-      <hr>
-      <h1>Hello MAAAN {{yourName}}!</h1>
-      <!-- schovat tlacitko, kdyz se generuje -->
-      <!-- stisknutim zavolat funkci generateText s priznakem zacni -->
-      <button ng-hide="generatingLocal" ng-click="generateText(true, true)">Generovat lokalni</button>
-      <!-- zobrazit tlacitko, kdyz se generuje -->
-      <!-- stisknutim zavolat funkci generateText s priznakem skonci -->
-      <button ng-show="generatingLocal" ng-click="generateText(false, true)">Zastavit lokalni</button>
-      <!-- schovat tlacitko, kdyz se generuje -->
-      <!-- stisknutim zavolat funkci generateText s priznakem zacni -->
-      <button ng-hide="generatingOnline" ng-click="generateText(true, false)">Generovat online</button>
-      <!-- zobrazit tlacitko, kdyz se generuje -->
-      <!-- stisknutim zavolat funkci generateText s priznakem skonci -->
-      <button ng-show="generatingOnline" ng-click="generateText(false, false)">Zastavit online</button>
-      <span>Pocet vygenerovanych zprav: {{messagesGenerated}}</span>
-      <hr>
-      <ul>
-        <!-- toto se zobrazi, kdyz je pole prazdne -->
-        <li ng-if="!texts.length">No texts present.</li>
-        <!-- toto vypise vsechny prvky pole -->        
-        <li ng-repeat="error in errors track by $index">{{error.userId + error.id}}</li>
-      </ul>
-    </div>
+      <div class="container">
+        <div> 
+          <label>Postcode:</label>
+          <input type="text" ng-model="postCode" placeholder="Enter a postcode" class="form-control" id="usr">
+          <label>Street:</label>
+          <input type="text" ng-model="street" placeholder="Enter a street" class="form-control" id="usr">
+          <label>Number:</label>
+          <input type="text" ng-model="number" placeholder="Enter a number" class="form-control" id="usr">
+          <label>Locality:</label>
+          <input type="text" ng-model="locality" placeholder="Enter a locality" class="form-control" id="usr">
+          <label>NewEvelatorID:</label>
+          <input type="text" ng-model="newEvelatorID" placeholder="Enter a NewEvelatorID" class="form-control" id="usr">
+
+          <label>StartDate:</label>
+          <div class="dropdown">
+            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="">
+              <div class="input-group"><input type="text" class="form-control" data-ng-model="data.date"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+              </div>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+              <datetimepicker data-ng-model="data.date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" data-before-render="beforeRender($view, $dates, $leftDate, $upDate, $rightDate)"/>
+            </ul>
+          </div>
+            <label>EndDate:</label>
+          <div class="dropdown">
+            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="">
+              <div class="input-group"><input type="text" class="form-control" data-ng-model="data.dateDropDownInput"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+              </div>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+              <datetimepicker data-ng-model="data.dateDropDownInput" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"/>
+            </ul>
+          </div>
+         <br>
+          <!-- schovat tlacitko, kdyz se generuje -->
+          <!-- stisknutim zavolat funkci generateText s priznakem zacni -->
+          
+          <button ng-hide="filterOn" ng-click="generateText(true)"   class="btn btn-primary active">Zapnout filtr</button>        
+          <button ng-show="filterOn" ng-click="generateText(false)"   class="btn btn-primary disabled">Vypnout filtr</button>
+       </div>
+      </div>  
+
+            <hr>
+    <div class="container">       
+      <ul class="nav nav-pills nav-justified">
+        <li class="active"><a href="#">Table</a></li>
+        <li><a href="#">Update Table</a></li>
+      </ul>      
+      <div class="table-responsive">
+        <table class="table table-hover" data-toggle="table">
+          <thead "thead-default">
+            <tr>
+              <th>EvelatorID</th>
+              <th>ErrorCode</th>
+              <th>Floorr</th>
+              <th>TimeStamp</th>
+              <th>Postcode</th>
+              <th>Street</th>
+              <th>Number</th>
+              <th>Locality</th>
+              <th>NewEvelatorID</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="text in texts | orderBy:['-ErrorCode', '-IsNull', 'TimeStamp']"  ng-class="MyTableClass(text)" >
+              <td>{{text.EvelatorID}}</td>
+              <td>{{text.ErrorCode}}</td>
+              <td>{{text.Floor}}</td>
+              <td>{{text.TimeStamp }}</td>
+              <td>{{text.Postcode}}</td>
+              <td>{{text.Street}}</td>
+              <td>{{text.Number}}</td>
+              <td>{{text.Locality}}</td>
+              <td>{{text.NewEvelatorID}}</td>
+              <td ng-show="text.ErrorCode > 0"><span class="glyphicon glyphicon-search"></span></td>
+              <td ng-hide="text.ErrorCode > 0"><span></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div> 
+     
+    <hr>
+    <h6>Message generated: {{messagesGenerated}}</h6>      
   </body>
 </html>

@@ -53,7 +53,7 @@ namespace EvelatorError
                 config.MapHttpAttributeRoutes();
                 config.Formatters.Remove(config.Formatters.XmlFormatter);
 
-                app.UseWebApi(config);
+                app = app.UseWebApi(config);
 
                 var fileServerOptions = new FileServerOptions
                 {
@@ -71,7 +71,7 @@ namespace EvelatorError
                 contentTypes.Mappings[".json"] = "application/json";
 
                 // spustit server s nastavenim
-                app.UseFileServer(fileServerOptions);
+                app = app.UseFileServer(fileServerOptions);
             }
             catch (Exception e)
             {

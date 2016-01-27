@@ -15,17 +15,17 @@ namespace EvelatorError
         /// EvelatorID property
         /// </summary>
         /// <value> ID of evelator </value>
-        public int EvelatorID { get; set;}
+        public int? EvelatorID { get; set;}
         /// <summary>
         /// ErrorCode property
         /// </summary>
         /// <value>Specific error</value>
-        public int ErrorCode { get; set;}
+        public int? ErrorCode { get; set;}
         /// <summary>
         /// Floor property
         /// </summary>
         /// <value> Floor where Evelator is</value>
-        public int Floor { get; set;}
+        public int? Floor { get; set;}
         /// <summary>
         /// Timestamp property
         /// </summary>
