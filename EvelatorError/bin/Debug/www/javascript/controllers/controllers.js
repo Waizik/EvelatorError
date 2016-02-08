@@ -1,7 +1,7 @@
 'use strict';
 
 // jedna se o kontrolery z modulu default, neni zde pouzit zadny plugin (v komentari je plugin pro prekladani textu)
-angular.module('default', /*['translate']*/ ['ui.bootstrap.datetimepicker'])
+angular.module('default', /*['translate']*/ [ 'ui.bootstrap.datetimepicker'])
     // toto se spusti hned na zacatku
     // nemusi se vubec pouzivat, jestli neni potreba
     .run(function ($rootScope, $location, $window, $timeout, $http, $q) {
@@ -14,7 +14,7 @@ angular.module('default', /*['translate']*/ ['ui.bootstrap.datetimepicker'])
     // $interval - interval, ve kterem se da periodicky neco delat
     // $timeout - za jakou dobu od spusteni (nacteni stranky atd.) se ma jaka akce provest jednou
     // config - pokud byste pouzival nejaky konfiguracni soubor (napr. s vychozimi hodnotami)
- 
+
     .controller('IndexController', ['$scope', '$http', '$interval', '$timeout',
         function ($scope, $http, $interval, $timeout) {
             
@@ -25,13 +25,27 @@ angular.module('default', /*['translate']*/ ['ui.bootstrap.datetimepicker'])
             $scope.messagesGenerated = 0;
             // priznak, zda se generuje lokalni
             $scope.filterOn = false;
+            $scope.filter = {};
             // funkce pro generovani textu
+            $scope.date = {};
+
+            $scope.tab = 1;
+
             // startGenerating je priznak, zda se ma zacit nebo skoncit
       
+            $scope.setTab = function(setTab){
+                $scope.tab = setTab;
+            }
 
-            $scope.generateText = function(filter) {
+            $scope.isSet = function(checkTab){
+                return $scope.tab === checkTab;
+            }
+
+            $scope.filtrTable = function(filter) {
                 $scope.filterOn = filter;
             };
+
+       
        
              
             // vyuziti $interval pro generovani lokalniho textu po 1 vterine
@@ -39,19 +53,23 @@ angular.module('default', /*['translate']*/ ['ui.bootstrap.datetimepicker'])
             var intervalLocal = $interval(function() {
                 // provadet pouze, pokud mame generovat
            
-                if ($scope.filterOn) {
-                         
+                if ($scope.filterOn) {                   
                     $http.post('http://localhost:8089/api/getFilterErrors/', {postCode: $scope.postCode,
                                                                               street: $scope.street,
                                                                               number: $scope.number,
-                                                                              locality: $scope.locality})
+                                                                              locality: $scope.locality,
+                                                                              dateFrom : $scope.date.dateFrom, //toto zde nema vyznam, protoze timestamp je vzdy maximalni cas. Az vypisu 
+                                                                              dateTo : $scope.date.dateTo //konkretnich chyb. Nicmene fahci to. (V apicontroleru se vytisl dany cas)
+                                                                              })
                         .success(function(data){
                             console.log(data);
                             $scope.messagesGenerated++;
                             $scope.texts = data;
                         })
                         .error(function(data) {
-                            alert(data);
+                             bootbox.alert("Nekde se stala chyba: " + data, function() {
+
+                            });
                         });
                     
                 }
@@ -74,7 +92,9 @@ angular.module('default', /*['translate']*/ ['ui.bootstrap.datetimepicker'])
                         })
                         // kdyz se nepovede
                         .error(function (data) {
-                            alert(data);
+                             bootbox.alert("Nekde se stala chyba: " + data, function() {
+
+                            });
                         });
 
                        
@@ -84,13 +104,62 @@ angular.module('default', /*['translate']*/ ['ui.bootstrap.datetimepicker'])
             }, 1000);
 
              $scope.MyTableClass = function(text){
-                            if(text.ErrorCode > 0)
+                            if(text.Errors[0] !== 0)
                                 return "danger";
                             else if (text.IsNull)
                                 return "warning";
                             else     
                                 return "success";
-                        }    
+            }
+
+            $scope.commas = function(items) {
+                return items.join(",");
+            }    
+
+            $scope.updateTable = function(){
+                $http.post('http://localhost:8089/api/updateEvelator/', {postCode: $scope.postCode,
+                                                                              street: $scope.street,
+                                                                              number: $scope.number,
+                                                                              locality: $scope.locality,
+                                                                              newEvelatorID: $scope.newEvelatorID,
+                                                                              evelatorID : $scope.evelatorID                                                                           
+                                                                              })
+                        .success(function(data){
+                            console.log(data);
+                        })
+                        .error(function(data) {                            
+                            bootbox.alert("Nekde se stala chyba: " + data, function() {
+
+                            });
+                        });
+            }
+
+
+            $scope.getIdInfo = function(){
+                console.log("volam get info");
+                if($scope.evelatorID != null && $scope.evelatorID != ""){
+                    $http.post('http://localhost:8089/api/getIdInfo/', $scope.evelatorID)
+                        .success(function(data){
+                            console.log("volam get info C#");
+                            //console.log(data);
+                            $scope.street = data.Street;
+                            $scope.postCode = data.Postcode;
+                            $scope.number = data.Number;
+                            $scope.locality = data.Locality;
+                        })
+                        .error(function(data){
+                            bootbox.alert("Nekde se stala chyba: " + data, function() {
+
+                            });
+                        });
+                }
+                else{
+                     $scope.street = "";
+                            $scope.postCode = "";
+                            $scope.number = "";
+                            $scope.locality = "";
+                }
+            }
                 
 
             // vyuziti $timeout pro zobrazeni textu po 3 vterinach po nacteni stranky
@@ -102,9 +171,11 @@ angular.module('default', /*['translate']*/ ['ui.bootstrap.datetimepicker'])
         }
     ])
     
-    .controller('ViewController', ['$scope', '$http', '$interval', '$timeout',
-        function ($scope, $http, $interval, $timeout) {
+    /*.controller('ValidationController', ['$scope', '$http',
+        function ($scope, $http) {
+           
+          
         }
-    ]);
+    ])*/
 
    

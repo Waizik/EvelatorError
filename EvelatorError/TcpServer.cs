@@ -50,6 +50,8 @@ namespace EvelatorError
                 // The DNS name of the computer               
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
+               // ipAddress = IPAddress.Parse("192.168.6.222");
+                //Console.WriteLine(ipAddress);
                 //Represents a network endpoint as an IP address and a port number.
                 //IPEndPoint(ipadress, port);
                 IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
@@ -119,25 +121,27 @@ namespace EvelatorError
                     byteRead = handleSocket.EndReceive(ar);
                     if (byteRead > 0)
                     {
-                        // Console.WriteLine("Read {0} bytes from socket. \n Data: {1}", Encoding.ASCII.GetString(clientObject.buffer, 0, 52).Length, Encoding.ASCII.GetString(clientObject.buffer, 0, 52));
-                        Error error = Parser.ErrorParse(Encoding.ASCII.GetString(clientObject.buffer, 0, 54));
-                        error.TimeStamp = DateTime.UtcNow;
-                        // Console.WriteLine("serialID:{0}, errorCode:{1}, floor: {2}, timestamp: {3}", error.serialID, error.errorCode, error.floor, error.timeStamp);                    
-                        Database.InsertError(error);
+                        
+                        Console.WriteLine("Read {0} bytes from socket. \n Data: {1}", Encoding.ASCII.GetString(clientObject.buffer, 0, byteRead).Length, Encoding.ASCII.GetString(clientObject.buffer, 0, byteRead));
+                        ErrorMessage errorMessage = Parser.ErrorParse(Encoding.ASCII.GetString(clientObject.buffer, 0, byteRead));
+                        errorMessage.TimeStamp = DateTime.UtcNow;
+                        
+                        Database.InsertError(errorMessage);
+                       
                         handleSocket.BeginReceive(clientObject.buffer, 0, ClientObject.BufferRecieveSize, 0, new AsyncCallback(ReadCallbackFunction), clientObject);
                     }
                     else
                     {
                         handleSocket.Shutdown(SocketShutdown.Both);
                         handleSocket.Close();
-                        Console.WriteLine("Disconect in TCP server");
+                        Console.WriteLine("Disconect in TCP server1");
                     }
                 }
-                catch
+                catch(Exception e)
                 {
                     handleSocket.Shutdown(SocketShutdown.Both);
                     handleSocket.Close();
-                    Console.WriteLine("Disconect in TCP server");
+                    Console.WriteLine("Disconect in TCP server2, message: {0}", e.Message);
                 }
                 
                 

@@ -9,26 +9,15 @@ namespace EvelatorError
     /// <summary>
     /// Throw is NewEvelatorID in database is not null
     /// </summary>
-    class UpdateRecordPoint : Exception
+    class UpdateRecordPoint : UpdateException
     {
-        /// <summary>
-        /// Private attribute point
-        /// </summary>
-        /// <value> What number is in NewEvelatorID</value>
-        private int point;
-        /// <summary>
-        /// message property
-        /// </summary>
-        /// <value>Message, thats is should be print, if ex. is throw</value>
-        public string message { get; private set; }
-        /// <summary>
+     /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="point">Param to save in attribute point</param>
-        public UpdateRecordPoint(int point)
+        public UpdateRecordPoint()
         {
-            this.point = point;
-            this.message = String.Format("This record points to {0}", point);
+            base.message = "Zde uz zaznam existuje";
         }
         
 

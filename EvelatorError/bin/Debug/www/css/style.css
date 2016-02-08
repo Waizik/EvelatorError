@@ -1,0 +1,18 @@
+.ng-invalid.ng-dirty.ng-not-empty {
+  border-color: #FA787E;
+}
+
+.ng-valid.ng-dirty.ng-not-empty {
+  border-color: #78FA89;
+}
+
+.withMarginBott { margin-bottom: 5px; }
+
+.withMarginRight { margin-right: 10px; }
+
+.withMarginTop { margin: 10px; }
+
+#container ul li {
+    display: inline-block;
+    float: none;
+}

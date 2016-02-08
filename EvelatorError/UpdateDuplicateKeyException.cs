@@ -9,8 +9,12 @@ namespace EvelatorError
     /// <summary>
     /// Throw if some ID is duplicate
     /// </summary>
-    class UpdateDuplicateKeyException : Exception
+    class UpdateDuplicateKeyException : UpdateException
     {
+        public UpdateDuplicateKeyException()
+        {
+            base.message = "Tento zaznam uz existuje";
+        }
 
     }
 }
